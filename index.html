@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+​
 
 <head>
     <meta charset="UTF-8">
@@ -14,7 +15,7 @@
     <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-database.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
     <title>Document</title>
-
+    ​
     <style>
         #employee-table th,
         td {
@@ -23,8 +24,7 @@
         }
     </style>
 </head>
-
-
+​
 
 <body>
     <div class="container">
@@ -36,62 +36,24 @@
             <p class="title">
                 Train Table
             </p>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Train Name</th>
-                        <th scope="col">Desitnation</th>
-                        <th scope="col">Frequency </th>
-                        <th scope="col">Next Arrival</th>
-                        <th scope="col">Minutes Away </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="trainTable">
-                        <th id="name-display"> </th>
-                        <th id="dist-display"> </th>
-                        <th id="freq-display"></th>
-                        <th id="arrive-display"></th>
-                        <th id="min-display"></th>
-                    </tr>
-                    <tr class="trainTable">
-                        <th id="name-display"> </th>
-                        <th id="dist-display"> </th>
-                        <th id="freq-display"></th>
-                        <th id="arrive-display"></th>
-                        <th id="min-display"></th>
-                    </tr>
-                    <tr class="trainTable">
-                        <th id="name-display"> </th>
-                        <th id="dist-display"> </th>
-                        <th id="freq-display"></th>
-                        <th id="arrive-display"></th>
-                        <th id="min-display"></th>
-                    </tr>
-                    <tr class="trainTable">
-                        <th id="name-display"> </th>
-                        <th id="dist-display"> </th>
-                        <th id="freq-display"></th>
-                        <th id="arrive-display"></th>
-                        <th id="min-display"></th>
-                    </tr>
-                    <tr class="trainTable">
-                        <th id="name-display"> </th>
-                        <th id="dist-display"> </th>
-                        <th id="freq-display"></th>
-                        <th id="arrive-display"></th>
-                        <th id="min-display"></th>
-                    </tr>
-                    <tr class="trainTable">
-                        <th id="name-display"> </th>
-                        <th id="dist-display"> </th>
-                        <th id="freq-display"></th>
-                        <th id="arrive-display"></th>
-                        <th id="min-display"></th>
-                    </tr>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="card">
+                <div class="card-header">
+                    Current Train Schedule
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover" id='train-table'>
+                        <tr>
+                            <th>Train Name</th>
+                            <th>Destination</th>
+                            <th>Frequency (min)</th>
+                            <th>Next Arrival</th>
+                            <th>Minutes Away</th>
+                        </tr>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         <br>
         <form>
@@ -118,7 +80,7 @@
                 <label for="rate-input">Minutes Away</label>
                 <input type="number" class="form-control" id="min-input">
             </div>
-
+            ​
             <button type="submit" class="btn btn-primary" id="add-train">Submit</button>
         </form>
     </div>
@@ -159,34 +121,39 @@
         console.log("ARRIVAL Time: " + moment(minutes).format("hh:mm"));
 
 
-        function createFrequency() {
-            var tFrequency = new frequency(),
-                currentTime = frequency.moment(),
+        function createFrequency(tFrequency, firstTime) {
+
+            tFrequency = new frequency();
+            var currentTime = frequency.moment(),
                 diffTime = frequency.diff(moment(firstTimeConverted)) + 1,
                 tRemainder = diffTime % frequency
-                tMinutesTillTrain = frequency - arrival;
-                nexTrain = moment().add(tMinutesTillTrain, "Minutes Away");
+            tMinutesTillTrain = frequency - arrival;
+            nexTrain = moment().add(tMinutesTillTrain, "Minutes Away");
+            //   return nexTrain
+            console.log(nexTrain)
         };
-        $('#clickMe').click(function () {
 
-            var min1 = $('#arrive-display');
-            var min2 = $('#min-display');
-            var timeDiff = Math.abs(min2.getTime() - min1.getTime());
-            var diffTime = Math.ceil(timeDiff / (1000 * 3600 * 24));
-            min2.val(min2.val().replace(diffTime));
-        });
 
         $("#add-train").on("click", function (event) {
+            // Prevent the page from refreshing when we click submit
             event.preventDefault();
 
+            // Grab user input, save it to variables
             name = $("#name-input").val().trim();
             destination = $("#dest-input").val().trim();
             frequency = $("#freq-input").val().trim();
             arrival = $("#arrive-input").val().trim();
             minutes = $("#min-input").val().trim();
-            console.log("destination")
-            console.log(destination)
 
+
+            var min1 = $('#arrive-display');
+            var min2 = $('#min-display');
+            var timeDiff = Math.abs(min2.getTime() - min1.getTime());
+            var Time = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            min2.val(min2.val().replace(Time));
+            createFrequency(10, 50);
+
+            // Upload the train to the database
             database.ref().push({
                 name: name,
                 destination: destination,
@@ -195,43 +162,57 @@
                 minutes: minutes,
                 dateAdded: firebase.database.ServerValue.TIMESTAMP
             });
+
+            // Lets log everything the user typed to the console
+            console.log("Name: " + name)
+            console.log("destination: " + destination)
+            console.log("frequency: " + frequency)
+            console.log("arrival: " + arrival)
+            console.log("min: " + minutes)
+
+            // Let the user know that the train was added
+            alert("Train added!")
+
+            // Clear the text box so that the values dont stay there
+            $("#name-input").val("")
+            $("#dest-input").val("")
+            $("#freq-input").val("")
+            $("#arrive-input").val("")
+            $("#min-input").val("")
+
         });
 
+        // Function to add the trian to the database and the row to HTML
         database.ref().on("child_added", function (snapshot) {
+            console.log(snapshot.val())
 
+            // Make the snapshot a variable so we can refer to its shorthand
             var sv = snapshot.val();
 
-            var Tname = sv.name
-            var Tdestination = sv.destination
-            var Tfrequency = sv.frequency
-            var Tfirst = sv.arrival
+            // Save everything to it's own variable
+            var tName = sv.name
+            var tDestination = sv.destination
+            var tFrequency = sv.frequency
+            var tMin = sv.minutes
+            var tArrival = sv.arrival
 
-            $("#name-display").text(sv.name);
-            $("#dist-display").text(sv.destination);
-            $("#freq-display").text(sv.frequency);
-            $("#arrive-display").text(sv.arrival);
-            $("#min-display").text(sv.minutes);
-            console.log(sv.minutes);
-
+            // Find the table with the ID "train-table" and add the items pulled from the database to the table
+            $("#train-table").append(
+                $("<tr>").append(
+                    $("<th>").text(tName),
+                    $("<th>").text(tDestination),
+                    $("<th>").text(tFrequency),
+                    $("<th>").text(tArrival),
+                    $("<th>").text(tMin)
+                )
+            )
 
         }, function (errorObject) {
             console.log("Errors handled: " + errorObject.code);
+        })
 
-
-        });
-        $("#traintable > tbody").append(
-            $("<tr>").append(
-                $("<th>").text(name),
-                $("<th>").text(destination),
-                $("<th>").text(frequency),
-                $("<th>").text(arrival),
-                $("<th>").text(minutes),
-
-                
-
-            )
-        )
     </script>
 </body>
+​
 
 </html>
