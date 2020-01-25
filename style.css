@@ -1,0 +1,20 @@
+body {
+    background-color: rgb(227, 227, 231);
+}
+.container {
+      background-color: white;
+      font-family: 'Cardo', serif;
+      padding: 20px;
+}
+.jumbotron {
+    color: black (53, 48, 48);
+    text-align: center;
+}
+.title{
+    background-color: rgb(151, 151, 151);
+    text-align: center;
+    color: white;
+}
+#add-user{
+    background-color:rgb(0, 0, 0) ;
+}

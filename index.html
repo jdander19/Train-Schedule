@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Cardo|Cormorant+Infant|Sulphur+Point&display=swap"
+        rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+    <title>Document</title>
+
+    <style>
+        #employee-table th,
+        td {
+            display: inline-block;
+            width: 20%;
+        }
+    </style>
+</head>
+
+
+
+<body>
+    <div class="container">
+        <div class="jumbotron jumbotron-fluid">
+            <h1 class="display-4">Terrific Train Time Table</h1>
+            <p class="lead">To Where We Go and Need to Go</p>
+        </div>
+        <div class="list-group">
+            <p class="title">
+                Train Table
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Train Name</th>
+                        <th scope="col">Desitnation</th>
+                        <th scope="col">Frequency </th>
+                        <th scope="col">Next Arrival</th>
+                        <th scope="col">Minutes Away </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="trainTable">
+                        <th id="name-display"> </th>
+                        <th id="dist-display"> </th>
+                        <th id="freq-display"></th>
+                        <th id="arrive-display"></th>
+                        <th id="min-display"></th>
+                    </tr>
+                    <tr class="trainTable">
+                        <th id="name-display"> </th>
+                        <th id="dist-display"> </th>
+                        <th id="freq-display"></th>
+                        <th id="arrive-display"></th>
+                        <th id="min-display"></th>
+                    </tr>
+                    <tr class="trainTable">
+                        <th id="name-display"> </th>
+                        <th id="dist-display"> </th>
+                        <th id="freq-display"></th>
+                        <th id="arrive-display"></th>
+                        <th id="min-display"></th>
+                    </tr>
+                    <tr class="trainTable">
+                        <th id="name-display"> </th>
+                        <th id="dist-display"> </th>
+                        <th id="freq-display"></th>
+                        <th id="arrive-display"></th>
+                        <th id="min-display"></th>
+                    </tr>
+                    <tr class="trainTable">
+                        <th id="name-display"> </th>
+                        <th id="dist-display"> </th>
+                        <th id="freq-display"></th>
+                        <th id="arrive-display"></th>
+                        <th id="min-display"></th>
+                    </tr>
+                    <tr class="trainTable">
+                        <th id="name-display"> </th>
+                        <th id="dist-display"> </th>
+                        <th id="freq-display"></th>
+                        <th id="arrive-display"></th>
+                        <th id="min-display"></th>
+                    </tr>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <form>
+            <p class="title">
+                Add Train
+            </p>
+            <div class="form-group">
+                <label for="name-input">Train Name</label>
+                <input type="text" class="form-control" id="name-input">
+            </div>
+            <div class="form-group">
+                <label for="role-input">Destination</label>
+                <input type="text" class="form-control" id="dest-input">
+            </div>
+            <div class="form-group">
+                <label for="date-input">Frequency</label>
+                <input type="number" class="form-control" id="freq-input">
+            </div>
+            <div class="form-group">
+                <label for="worked-input">Next Arrival</label>
+                <input type="text" class="form-control" id="arrive-input">
+            </div>
+            <div class="form-group">
+                <label for="rate-input">Minutes Away</label>
+                <input type="number" class="form-control" id="min-input">
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="add-train">Submit</button>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script>
+        var Config = {
+            apiKey: "AIzaSyBj7yyBnRGIaePW4zlBWLFbMqXnBIcj8o8",
+            authDomain: "new-project-281c3.firebaseapp.com",
+            databaseURL: "https://new-project-281c3.firebaseio.com",
+            projectId: "new-project-281c3",
+            storageBucket: "new-project-281c3.appspot.com",
+            messagingSenderId: "41928375523",
+            appId: "1:41928375523:web:159ab301b5bdb7ff55d9d6"
+
+        };
+        firebase.initializeApp(Config);
+        var database = firebase.database();
+
+        var name = "";
+        var destination = "";
+        var frequency = 0;
+        var arrival = 0;
+        var minutes = 0;
+
+        var tFrequency = 3;
+        var firstTime = "03:30";
+        var firstTimeConverted = moment(firstTime, "HH:mm").subtract(100, "minutes");
+        console.log(firstTimeConverted);
+        var currentTime = moment();
+        console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+        var diffTime = moment().diff(moment(firstTimeConverted), "seconds");
+        console.log("DIFFERENCE IN TIME: " + diffTime);
+        var tRemainder = diffTime % tFrequency;
+        console.log(tRemainder);
+        var tMinutesTillTrain = tFrequency - tRemainder;
+        console.log("MINUTES TILL TRAIN " + tMinutesTillTrain);
+        var nexTrain = moment().add(tMinutesTillTrain, "minutes");
+        console.log("ARRIVAL Time: " + moment(minutes).format("hh:mm"));
+
+
+        function createFrequency() {
+            var tFrequency = new frequency(),
+                currentTime = frequency.moment(),
+                diffTime = frequency.diff(moment(firstTimeConverted)) + 1,
+                tRemainder = diffTime % frequency
+                tMinutesTillTrain = frequency - arrival;
+                nexTrain = moment().add(tMinutesTillTrain, "Minutes Away");
+        };
+        $('#clickMe').click(function () {
+
+            var min1 = $('#arrive-display');
+            var min2 = $('#min-display');
+            var timeDiff = Math.abs(min2.getTime() - min1.getTime());
+            var diffTime = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            min2.val(min2.val().replace(diffTime));
+        });
+
+        $("#add-train").on("click", function (event) {
+            event.preventDefault();
+
+            name = $("#name-input").val().trim();
+            destination = $("#dest-input").val().trim();
+            frequency = $("#freq-input").val().trim();
+            arrival = $("#arrive-input").val().trim();
+            minutes = $("#min-input").val().trim();
+            console.log("destination")
+            console.log(destination)
+
+            database.ref().push({
+                name: name,
+                destination: destination,
+                frequency: frequency,
+                arrival: arrival,
+                minutes: minutes,
+                dateAdded: firebase.database.ServerValue.TIMESTAMP
+            });
+        });
+
+        database.ref().on("child_added", function (snapshot) {
+
+            var sv = snapshot.val();
+
+            var Tname = sv.name
+            var Tdestination = sv.destination
+            var Tfrequency = sv.frequency
+            var Tfirst = sv.arrival
+
+            $("#name-display").text(sv.name);
+            $("#dist-display").text(sv.destination);
+            $("#freq-display").text(sv.frequency);
+            $("#arrive-display").text(sv.arrival);
+            $("#min-display").text(sv.minutes);
+            console.log(sv.minutes);
+
+
+        }, function (errorObject) {
+            console.log("Errors handled: " + errorObject.code);
+
+
+        });
+        $("#traintable > tbody").append(
+            $("<tr>").append(
+                $("<th>").text(name),
+                $("<th>").text(destination),
+                $("<th>").text(frequency),
+                $("<th>").text(arrival),
+                $("<th>").text(minutes),
+
+                
+
+            )
+        )
+    </script>
+</body>
+
+</html>
