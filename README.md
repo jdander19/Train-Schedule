@@ -1,3 +1,3 @@
 # Train-Schedule
 
-I managed to get everything working and the database to go back and forth with firebase. the Console log calculation seems to be working but the final data of arrived time does not work or go on the page. Im struggling to work out a code from bottom to top and starting functions from scratch and that is keeping me from finalizing the very last part requested in the homework. Hopefully I'll be able to work out functions better in the near future. 
+A train schedule application that incorporates Firebase to host arrival and departure data. 
